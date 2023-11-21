@@ -31,7 +31,7 @@ public class LiquifierRecipe extends AbstractProcessingRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return RecipeRegistry.LIQUIFIER_TYPE;
+        return RecipeRegistry.LIQUIFIER_TYPE.get();
     }
 
     @Override

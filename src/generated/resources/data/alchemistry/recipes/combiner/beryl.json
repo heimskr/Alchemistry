@@ -3,28 +3,28 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:oxygen"
-      },
-      "count": 18
-    },
-    {
-      "ingredient": {
-        "item": "chemlib:silicon"
-      },
-      "count": 6
-    },
-    {
-      "ingredient": {
-        "item": "chemlib:aluminum"
-      },
-      "count": 2
-    },
-    {
+      "count": 3,
       "ingredient": {
         "item": "chemlib:beryllium"
-      },
-      "count": 3
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "chemlib:aluminum"
+      }
+    },
+    {
+      "count": 6,
+      "ingredient": {
+        "item": "chemlib:silicon"
+      }
+    },
+    {
+      "count": 18,
+      "ingredient": {
+        "item": "chemlib:oxygen"
+      }
     }
   ],
   "result": {

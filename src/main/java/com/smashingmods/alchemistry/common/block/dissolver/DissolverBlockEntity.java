@@ -11,19 +11,24 @@ import com.smashingmods.alchemylib.api.recipe.AbstractProcessingRecipe;
 import com.smashingmods.alchemylib.api.storage.EnergyStorageHandler;
 import com.smashingmods.alchemylib.api.storage.ProcessingSlotHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 
 public class DissolverBlockEntity extends AbstractInventoryBlockEntity {
@@ -31,6 +36,7 @@ public class DissolverBlockEntity extends AbstractInventoryBlockEntity {
     private DissolverRecipe currentRecipe;
     private ResourceLocation recipeId;
     private final NonNullList<ItemStack> internalBuffer = NonNullList.createWithCapacity(64);
+    private boolean valid = false;
 
     public DissolverBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
         super(Alchemistry.MODID, BlockEntityRegistry.DISSOLVER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
@@ -48,15 +54,15 @@ public class DissolverBlockEntity extends AbstractInventoryBlockEntity {
 
     @Override
     public void tick() {
-        super.tick();
-        if (!isProcessingPaused()) {
+        if (!isProcessingPaused() && (!getInputHandler().getStackInSlot(0).isEmpty() || !internalBuffer.isEmpty())) {
+            super.tick();
             processBuffer();
         }
     }
 
     @Override
     public void updateRecipe() {
-        if (level != null && !level.isClientSide() && !isRecipeLocked()) {
+        if (level != null && !level.isClientSide() && !isRecipeLocked() && !getInputHandler().getStackInSlot(0).isEmpty()) {
             RecipeRegistry.getDissolverRecipe(recipe -> recipe.matches(getInputHandler().getStackInSlot(0)), level)
                 .ifPresent(recipe -> {
                    if (currentRecipe == null || !currentRecipe.equals(recipe)) {
@@ -100,7 +106,9 @@ public class DissolverBlockEntity extends AbstractInventoryBlockEntity {
             for (int j = 0; j < getOutputHandler().getStacks().size(); j++) {
                 ItemStack slotStack = getOutputHandler().getStackInSlot(j).copy();
                 if (slotStack.isEmpty() || (ItemStack.isSameItemSameTags(bufferStack, slotStack) && bufferStack.getCount() + slotStack.getCount() <= slotStack.getMaxStackSize())) {
-                    getOutputHandler().setOrIncrement(j, bufferStack);
+                    valid = true;
+                    ItemHandlerHelper.insertItemStacked(getOutputHandler(), bufferStack, false);
+                    valid = false;
                     internalBuffer.remove(i);
                     break;
                 }
@@ -146,16 +154,14 @@ public class DissolverBlockEntity extends AbstractInventoryBlockEntity {
     public ProcessingSlotHandler initializeInputHandler() {
         return new ProcessingSlotHandler(1) {
             @Override
-            protected void onContentsChanged(int slot) {
-                if (!isEmpty()) {
-                    updateRecipe();
-                }
+            protected void onContentsChanged(int pSlot) {
+                updateRecipe();
                 setCanProcess(canProcessRecipe());
                 setChanged();
             }
 
             @Override
-            public boolean isItemValid(int pSlot, @NotNull ItemStack pItemStack) {
+            public boolean isItemValid(int pSlot, @Nonnull ItemStack pItemStack) {
                 if (currentRecipe != null && isRecipeLocked()) {
                     return currentRecipe.getInput().matches(pItemStack);
                 }
@@ -167,13 +173,20 @@ public class DissolverBlockEntity extends AbstractInventoryBlockEntity {
     @Override
     public ProcessingSlotHandler initializeOutputHandler() {
         return new ProcessingSlotHandler(12) {
+
+            @Nonnull
             @Override
-            public boolean isItemValid(int pSlot, ItemStack pItemStack) {
-                return false;
+            public ItemStack insertItem(int pSlot, @Nonnull ItemStack stack, boolean simulate) {
+                return super.insertItem(pSlot, stack, simulate);
             }
 
             @Override
-            protected void onContentsChanged(int slot) {
+            public boolean isItemValid(int pSlot, ItemStack pItemStack) {
+                return valid;
+            }
+
+            @Override
+            protected void onContentsChanged(int pSlot) {
                 setChanged();
             }
         };
@@ -220,10 +233,10 @@ public class DissolverBlockEntity extends AbstractInventoryBlockEntity {
     }
 
     @Override
-    public void dropContents() {
-        if (level != null && !level.isClientSide()) {
-            Containers.dropContents(level, getBlockPos(), internalBuffer);
+    public void dropContents(Level pLevel, BlockPos pBlockPos) {
+        if (!pLevel.isClientSide()) {
+            Containers.dropContents(pLevel, pBlockPos, internalBuffer);
         }
-        super.dropContents();
+        super.dropContents(pLevel, pBlockPos);
     }
 }

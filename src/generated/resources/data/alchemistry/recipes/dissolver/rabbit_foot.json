@@ -2,21 +2,19 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:rabbit_foot"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
         "results": [
           {
-            "item": "chemlib:protein",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:protein"
           }
         ]
       },
@@ -28,6 +26,8 @@
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

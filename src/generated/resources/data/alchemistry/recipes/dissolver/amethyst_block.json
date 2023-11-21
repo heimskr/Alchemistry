@@ -2,14 +2,12 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:amethyst_block"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 4,
-    "weighted": true,
     "groups": [
       {
         "probability": 1000.0,
@@ -38,6 +36,8 @@
           }
         ]
       }
-    ]
+    ],
+    "rolls": 4,
+    "weighted": true
   }
 }

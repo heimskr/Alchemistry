@@ -2,13 +2,13 @@
   "type": "alchemistry:liquifier",
   "group": "alchemistry:liquifier",
   "input": {
+    "count": 8,
     "ingredient": {
       "item": "chemlib:nitric_oxide"
-    },
-    "count": 8
+    }
   },
   "result": {
-    "fluid": "chemlib:nitric_oxide_fluid",
-    "amount": "500"
+    "amount": "500",
+    "fluid": "chemlib:nitric_oxide_fluid"
   }
 }

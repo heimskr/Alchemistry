@@ -2,40 +2,40 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:emerald_block"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
         "results": [
           {
-            "item": "chemlib:beryl",
-            "count": 64
+            "count": 64,
+            "item": "chemlib:beryl"
           },
           {
-            "item": "chemlib:beryl",
-            "count": 8
+            "count": 8,
+            "item": "chemlib:beryl"
           },
           {
-            "item": "chemlib:chromium",
-            "count": 64
+            "count": 64,
+            "item": "chemlib:chromium"
           },
           {
-            "item": "chemlib:chromium",
-            "count": 8
+            "count": 8,
+            "item": "chemlib:chromium"
           },
           {
-            "item": "chemlib:vanadium",
-            "count": 36
+            "count": 36,
+            "item": "chemlib:vanadium"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

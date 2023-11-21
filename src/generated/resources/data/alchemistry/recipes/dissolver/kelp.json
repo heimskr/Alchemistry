@@ -2,14 +2,12 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:kelp"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": true,
     "groups": [
       {
         "probability": 100.0,
@@ -23,8 +21,8 @@
         "probability": 17.0,
         "results": [
           {
-            "item": "chemlib:sodium_carbonate",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:sodium_carbonate"
           }
         ]
       },
@@ -36,6 +34,8 @@
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": true
   }
 }

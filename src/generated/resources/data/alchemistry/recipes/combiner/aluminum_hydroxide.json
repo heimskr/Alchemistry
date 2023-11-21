@@ -3,16 +3,16 @@
   "group": "alchemistry:combiner",
   "input": [
     {
+      "count": 1,
       "ingredient": {
         "item": "chemlib:aluminum"
-      },
-      "count": 1
+      }
     },
     {
+      "count": 3,
       "ingredient": {
         "item": "chemlib:hydroxide"
-      },
-      "count": 3
+      }
     }
   ],
   "result": {

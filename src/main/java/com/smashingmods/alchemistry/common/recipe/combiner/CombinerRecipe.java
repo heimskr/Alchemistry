@@ -33,7 +33,7 @@ public class CombinerRecipe extends AbstractProcessingRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return RecipeRegistry.COMBINER_TYPE;
+        return RecipeRegistry.COMBINER_TYPE.get();
     }
 
     @Override

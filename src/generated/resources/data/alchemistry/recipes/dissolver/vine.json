@@ -2,14 +2,12 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:vine"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 25.0,
@@ -27,6 +25,8 @@
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

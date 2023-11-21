@@ -1,20 +1,30 @@
 package com.smashingmods.alchemistry.common.block.reactor;
 
+import java.util.function.Consumer;
+
 import com.mojang.math.Vector3f;
 import com.smashingmods.alchemistry.Alchemistry;
+import com.smashingmods.alchemistry.registry.BlockRegistry;
+import com.smashingmods.alchemylib.api.block.AbstractProcessingBlock;
 import com.smashingmods.alchemylib.api.blockentity.power.PowerState;
 import com.smashingmods.alchemylib.api.blockentity.power.PowerStateProperty;
 import com.smashingmods.alchemylib.api.blockentity.processing.AbstractInventoryBlockEntity;
+import com.smashingmods.alchemylib.api.storage.ProcessingSlotHandler;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-
-import java.util.function.Consumer;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockEntity implements ReactorBlockEntity {
 
@@ -28,6 +38,13 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
     private boolean energyFound;
     private boolean inputFound;
     private boolean outputFound;
+
+    /**
+     * True if the reactor should actively push it's outputs to a connected
+     * container (such as a chest). Otherwise the reactor will only passively
+     * provide it's outputs.
+     */
+    private boolean autoeject = false;
 
     public AbstractReactorBlockEntity(BlockEntityType<?> pBlockEntityType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(Alchemistry.MODID, pBlockEntityType, pWorldPosition, pBlockState);
@@ -85,6 +102,9 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
                         setPowerState(PowerState.STANDBY);
                     }
                 }
+                if (isAutoEject()) {
+                    tryEjectOutputs();
+                }
             } else {
                 setPowerState(PowerState.DISABLED);
             }
@@ -120,11 +140,10 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
                         .filter(blockPos -> level.getBlockEntity(blockPos) instanceof ReactorEnergyBlockEntity)
                         .findFirst()
                         .ifPresent(blockPos -> {
-                            BlockState energyState = level.getBlockState(blockPos);
-                            level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
-                            level.setBlockAndUpdate(blockPos, energyState);
                             setEnergyFound(true);
                             reactorEnergyBlockEntity = (ReactorEnergyBlockEntity) level.getBlockEntity(blockPos);
+                            reactorEnergyBlockEntity.setController(this);
+                            level.updateNeighborsAt(blockPos, BlockRegistry.REACTOR_ENERGY.get());
                         });
             } else {
                 reactorEnergyBlockEntity.setController(this);
@@ -135,11 +154,10 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
                         .filter(blockPos -> level.getBlockEntity(blockPos) instanceof ReactorInputBlockEntity)
                         .findFirst()
                         .ifPresent(blockPos -> {
-                            BlockState inputState = level.getBlockState(blockPos);
-                            level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 7);
-                            level.setBlock(blockPos, inputState, 7);
                             inputFound = true;
                             reactorInputBlockEntity = (ReactorInputBlockEntity) level.getBlockEntity(blockPos);
+                            reactorInputBlockEntity.setController(this);
+                            level.updateNeighborsAt(blockPos, BlockRegistry.REACTOR_INPUT.get());
                         });
             } else {
                 reactorInputBlockEntity.setController(this);
@@ -151,11 +169,10 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
                         .filter(blockPos -> level.getBlockEntity(blockPos) instanceof ReactorOutputBlockEntity)
                         .findFirst()
                         .ifPresent(blockPos -> {
-                            BlockState outputState = level.getBlockState(blockPos);
-                            level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 7);
-                            level.setBlock(blockPos, outputState, 7);
                             outputFound = true;
                             reactorOutputBlockEntity = (ReactorOutputBlockEntity) level.getBlockEntity(blockPos);
+                            reactorOutputBlockEntity.setController(this);
+                            level.updateNeighborsAt(blockPos, BlockRegistry.REACTOR_OUTPUT.get());
                         });
             } else {
                 reactorOutputBlockEntity.setController(this);
@@ -185,6 +202,10 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
 
     public void setOutputFound(boolean pOutputFound) {
         this.outputFound = pOutputFound;
+    }
+
+    public void setAutoeject(boolean autoeject) {
+        this.autoeject = autoeject;
     }
 
     @Override
@@ -270,6 +291,7 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
         if (reactorOutputBlockEntity != null) {
             pTag.put("reactorOutputPos", blockPosToTag(reactorOutputBlockEntity.getBlockPos()));
         }
+        pTag.putBoolean("autoeject", autoeject);
         super.saveAdditional(pTag);
     }
 
@@ -297,6 +319,8 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
                 outputFound = false;
             }
         }
+
+        autoeject = pTag.getBoolean("autoeject");
     }
 
     private CompoundTag blockPosToTag(BlockPos pBlockPos) {
@@ -309,5 +333,41 @@ public abstract class AbstractReactorBlockEntity extends AbstractInventoryBlockE
 
     private BlockPos blockPosFromTag(CompoundTag pTag) {
         return new BlockPos(pTag.getInt("x"), pTag.getInt("y"), pTag.getInt("z"));
+    }
+
+    public boolean isAutoEject() {
+        return autoeject;
+    }
+
+    public void tryEjectOutputs() {
+        if (reactorOutputBlockEntity == null) {
+            return;
+        }
+
+        Direction outputDirection = reactorOutputBlockEntity.getBlockState().getValue(AbstractProcessingBlock.FACING);
+        BlockEntity target = level.getBlockEntity(reactorOutputBlockEntity.getBlockPos().relative(outputDirection));
+
+        if (target == null) {
+            return; // Output pointing to air or a solid block (that doesn't happen to be a container or something)
+        }
+
+        IItemHandler targetHandler = target.getCapability(ForgeCapabilities.ITEM_HANDLER, outputDirection.getOpposite()).orElse(null);
+
+        if (targetHandler != null) {
+            ProcessingSlotHandler outputHandler = getOutputHandler();
+            for (int i = 0; i < outputHandler.getSlots(); i++) {
+                ItemStack outputStack = outputHandler.getStackInSlot(i);
+                if (outputStack.isEmpty()) {
+                    continue; // No need to transfer an empty itemstack
+                }
+                ItemStack remaining = ItemHandlerHelper.insertItem(targetHandler, outputStack, false);
+                if (remaining.getCount() == outputStack.getCount()) {
+                    // Item not transfered - most likely no other items will be transfered either,
+                    // so we can break completely.
+                    break;
+                }
+                outputHandler.setStackInSlot(i, remaining);
+            }
+        }
     }
 }

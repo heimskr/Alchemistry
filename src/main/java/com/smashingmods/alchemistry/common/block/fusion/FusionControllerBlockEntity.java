@@ -20,9 +20,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -191,7 +191,7 @@ public class FusionControllerBlockEntity extends AbstractReactorBlockEntity {
             }
 
             @Override
-            public boolean isItemValid(int pSlot, @NotNull ItemStack pItemStack) {
+            public boolean isItemValid(int pSlot, @Nonnull ItemStack pItemStack) {
 
                 if (level != null && !level.isClientSide() && autoBalanced && !isRecipeLocked()) {
                     ItemStack slot0 = pSlot == 0 ? pItemStack : getStackInSlot(0);

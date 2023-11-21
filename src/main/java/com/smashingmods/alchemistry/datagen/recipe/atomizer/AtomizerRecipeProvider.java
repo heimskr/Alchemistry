@@ -13,12 +13,13 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static com.smashingmods.alchemistry.datagen.DatagenUtil.getLocation;
+import static com.smashingmods.alchemylib.datagen.DatagenHelpers.getLocation;
 
 public class AtomizerRecipeProvider {
 
@@ -41,9 +42,7 @@ public class AtomizerRecipeProvider {
     private Consumer<? super Chemical> chemicalToFluidRecipe() {
         return chemical -> FluidRegistry.FLUIDS.getEntries().stream()
                 .map(RegistryObject::get)
-                .filter(fluid -> Objects.requireNonNull(fluid.getRegistryName())
-                        .getPath()
-                        .contains(chemical.getChemicalName()))
+                .filter(fluid -> Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(fluid)).getPath().contains(chemical.getChemicalName()))
                 .findFirst()
                 .map(fluid -> new FluidStack(fluid, 500))
                 .ifPresent(fluidStack -> atomizer(fluidStack, new ItemStack(chemical, 8)));
@@ -51,21 +50,21 @@ public class AtomizerRecipeProvider {
 
     @SuppressWarnings("unused")
     private void atomizer(FluidStack pInput, ItemStack pOutput, ICondition pCondition) {
-        ResourceLocation recipeId = pOutput.getItem().getRegistryName();
+        ResourceLocation recipeId = ForgeRegistries.ITEMS.getKey(pOutput.getItem());
         ConditionalRecipe.builder()
                 .addCondition(pCondition)
                 .addRecipe(AtomizerRecipeBuilder.createRecipe(pInput, pOutput, Objects.requireNonNull(recipeId))
                         .group(String.format("%s:atomizer", Alchemistry.MODID))
-                        .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(getLocation(pOutput, "atomizer")))
+                        .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(getLocation(pOutput, "atomizer", Alchemistry.MODID)))
                         ::save)
                 .build(consumer, new ResourceLocation(Alchemistry.MODID, String.format("atomizer/%s", recipeId.getPath())));
     }
 
     private void atomizer(FluidStack pInput, ItemStack pOutput) {
-        ResourceLocation recipeId = pOutput.getItem().getRegistryName();
+        ResourceLocation recipeId = ForgeRegistries.ITEMS.getKey(pOutput.getItem());
         AtomizerRecipeBuilder.createRecipe(pInput, pOutput, Objects.requireNonNull(recipeId))
                 .group(String.format("%s:atomizer", Alchemistry.MODID))
-                .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(getLocation(pOutput, "atomizer")))
+                .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(getLocation(pOutput, "atomizer", Alchemistry.MODID)))
                 .save(consumer);
     }
 }

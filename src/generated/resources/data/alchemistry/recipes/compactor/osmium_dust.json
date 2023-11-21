@@ -2,10 +2,10 @@
   "type": "alchemistry:compactor",
   "group": "alchemistry:compactor",
   "input": {
+    "count": 16,
     "ingredient": {
       "item": "chemlib:osmium"
-    },
-    "count": 16
+    }
   },
   "result": {
     "item": "chemlib:osmium_dust"

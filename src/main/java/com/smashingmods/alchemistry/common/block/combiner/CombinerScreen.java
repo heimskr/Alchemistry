@@ -4,19 +4,23 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.smashingmods.alchemistry.Alchemistry;
 import com.smashingmods.alchemistry.client.container.RecipeSelectorScreen;
+import com.smashingmods.alchemistry.client.container.button.IOConfigurationButton;
 import com.smashingmods.alchemistry.common.recipe.combiner.CombinerRecipe;
 import com.smashingmods.alchemistry.registry.RecipeRegistry;
 import com.smashingmods.alchemylib.api.blockentity.container.AbstractProcessingScreen;
 import com.smashingmods.alchemylib.api.blockentity.container.Direction2D;
 import com.smashingmods.alchemylib.api.blockentity.container.FakeItemRenderer;
-import com.smashingmods.alchemylib.api.blockentity.container.button.RecipeSelectorButton;
 import com.smashingmods.alchemylib.api.blockentity.container.data.AbstractDisplayData;
 import com.smashingmods.alchemylib.api.blockentity.container.data.EnergyDisplayData;
 import com.smashingmods.alchemylib.api.blockentity.container.data.ProgressDisplayData;
 import com.smashingmods.alchemylib.api.storage.ProcessingSlotHandler;
+import com.smashingmods.alchemylib.client.button.LockButton;
+import com.smashingmods.alchemylib.client.button.PauseButton;
+import com.smashingmods.alchemylib.client.button.RecipeSelectorButton;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +32,10 @@ public class CombinerScreen extends AbstractProcessingScreen<CombinerMenu> {
 
     protected final List<AbstractDisplayData> displayData = new ArrayList<>();
     private final CombinerBlockEntity blockEntity;
+
+    private final LockButton lockButton = new LockButton(this);
+    private final PauseButton pauseButton = new PauseButton(this);
+    private final IOConfigurationButton sideConfigButton = new IOConfigurationButton(this);
 
     private final RecipeSelectorScreen<CombinerScreen, CombinerBlockEntity, CombinerRecipe> recipeSelectorScreen;
     private final RecipeSelectorButton recipeSelector;
@@ -50,6 +58,7 @@ public class CombinerScreen extends AbstractProcessingScreen<CombinerMenu> {
         widgets.add(lockButton);
         widgets.add(pauseButton);
         widgets.add(recipeSelector);
+        widgets.add(sideConfigButton);
         super.init();
     }
 
@@ -72,7 +81,7 @@ public class CombinerScreen extends AbstractProcessingScreen<CombinerMenu> {
 
     @Override
     protected void renderLabels(PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        Component title = new TranslatableComponent("alchemistry.container.combiner");
+        Component title = MutableComponent.create(new TranslatableContents("alchemistry.container.combiner"));
         drawString(pPoseStack, font, title, imageWidth / 2 - font.width(title) / 2, -10, 0xFFFFFFFF);
     }
 
@@ -85,7 +94,7 @@ public class CombinerScreen extends AbstractProcessingScreen<CombinerMenu> {
             itemRenderer.renderAndDecorateItem(currentOutput, leftPos + 152, topPos + 15);
 
             if (pMouseX >= leftPos + 149 && pMouseX < leftPos + 173  && pMouseY >= topPos + 11 && pMouseY < topPos + 35) {
-                renderItemTooltip(pPoseStack, currentOutput, new TranslatableComponent("alchemistry.container.current_recipe"), pMouseX, pMouseY);
+                renderItemTooltip(pPoseStack, currentOutput, MutableComponent.create(new TranslatableContents("alchemistry.container.combiner.current_recipe")), pMouseX, pMouseY);
             }
 
             int xOrigin = leftPos + 48;
@@ -103,9 +112,10 @@ public class CombinerScreen extends AbstractProcessingScreen<CombinerMenu> {
 
                         if (handler.getStackInSlot(index).isEmpty()) {
                             FakeItemRenderer.renderFakeItem(itemStack, x, y, 0.35F);
+                            itemRenderer.renderGuiItemDecorations(font, itemStack, x, y);
 
                             if (pMouseX >= x - 2 && pMouseX < x + 16 && pMouseY >= y - 1 && pMouseY < y + 17) {
-                                renderItemTooltip(pPoseStack, itemStack, new TranslatableComponent("alchemistry.container.required_input"), pMouseX, pMouseY);
+                                renderItemTooltip(pPoseStack, itemStack, MutableComponent.create(new TranslatableContents("alchemistry.container.required_input")), pMouseX, pMouseY);
                             }
                         }
                     }

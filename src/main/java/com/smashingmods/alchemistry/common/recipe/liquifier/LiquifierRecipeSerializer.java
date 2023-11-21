@@ -10,11 +10,10 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Objects;
 
-public class LiquifierRecipeSerializer<T extends LiquifierRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
+public class LiquifierRecipeSerializer<T extends LiquifierRecipe> implements RecipeSerializer<T> {
 
     private final IFactory<T> factory;
 

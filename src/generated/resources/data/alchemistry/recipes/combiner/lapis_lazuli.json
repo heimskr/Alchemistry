@@ -3,28 +3,28 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:silicon"
-      },
-      "count": 3
-    },
-    {
+      "count": 6,
       "ingredient": {
         "item": "chemlib:sodium"
-      },
-      "count": 6
+      }
     },
     {
+      "count": 3,
       "ingredient": {
         "item": "chemlib:mullite"
-      },
-      "count": 3
+      }
     },
     {
+      "count": 2,
       "ingredient": {
         "item": "chemlib:calcium_sulfide"
-      },
-      "count": 2
+      }
+    },
+    {
+      "count": 3,
+      "ingredient": {
+        "item": "chemlib:silicon"
+      }
     }
   ],
   "result": {

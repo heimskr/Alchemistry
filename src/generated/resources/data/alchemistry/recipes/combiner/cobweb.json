@@ -3,10 +3,10 @@
   "group": "alchemistry:combiner",
   "input": [
     {
+      "count": 2,
       "ingredient": {
         "item": "chemlib:protein"
-      },
-      "count": 2
+      }
     }
   ],
   "result": {

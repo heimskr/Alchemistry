@@ -3,28 +3,28 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:silicon"
-      },
-      "count": 2
-    },
-    {
-      "ingredient": {
-        "item": "chemlib:oxygen"
-      },
-      "count": 6
-    },
-    {
-      "ingredient": {
-        "item": "chemlib:copper"
-      },
-      "count": 1
-    },
-    {
+      "count": 1,
       "ingredient": {
         "item": "chemlib:barium"
-      },
-      "count": 1
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "chemlib:copper"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "chemlib:silicon"
+      }
+    },
+    {
+      "count": 6,
+      "ingredient": {
+        "item": "chemlib:oxygen"
+      }
     }
   ],
   "result": {

@@ -1,20 +1,20 @@
 {
-  "rewards": {
-    "recipes": [
-      "forge:ores/diamond"
-    ]
-  },
   "criteria": {
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
         "recipe": "forge:ores/diamond"
-      }
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "forge:ores/diamond"
+    ]
+  }
 }

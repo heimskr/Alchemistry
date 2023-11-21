@@ -2,14 +2,12 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "chemlib:nickel_nitrate"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
@@ -18,11 +16,13 @@
             "item": "chemlib:nickel"
           },
           {
-            "item": "chemlib:nitrate",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:nitrate"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

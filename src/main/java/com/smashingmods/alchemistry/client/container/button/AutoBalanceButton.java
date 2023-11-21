@@ -7,19 +7,22 @@ import com.smashingmods.alchemistry.common.network.ToggleAutoBalanceButtonPacket
 import com.smashingmods.alchemylib.api.blockentity.container.AbstractProcessingScreen;
 import com.smashingmods.alchemylib.api.blockentity.container.button.AbstractAlchemyButton;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 import javax.annotation.Nonnull;
 
 public class AutoBalanceButton extends AbstractAlchemyButton {
 
-    public AutoBalanceButton(AbstractProcessingScreen<?> pParent, FusionControllerBlockEntity pBlockEntity) {
-        super(pParent, pBlockEntity, pButton -> {
-                    boolean toggleAutoBalance = !pBlockEntity.isAutoBalanced();
-                    pBlockEntity.setAutoBalanced(toggleAutoBalance);
-                    pBlockEntity.setChanged();
-                    Alchemistry.PACKET_HANDLER.sendToServer(new ToggleAutoBalanceButtonPacket(pBlockEntity.getBlockPos(), toggleAutoBalance));
-                });
+    public AutoBalanceButton(AbstractProcessingScreen<?> pParent) {
+        super(pParent, pButton -> {
+            if (pParent.getBlockEntity() instanceof FusionControllerBlockEntity fusionControllerBlockEntity) {
+                boolean toggleAutoBalance = !fusionControllerBlockEntity.isAutoBalanced();
+                fusionControllerBlockEntity.setAutoBalanced(toggleAutoBalance);
+                fusionControllerBlockEntity.setChanged();
+                Alchemistry.PACKET_HANDLER.sendToServer(new ToggleAutoBalanceButtonPacket(fusionControllerBlockEntity.getBlockPos(), toggleAutoBalance));
+            }
+        });
     }
 
     @Override
@@ -31,6 +34,6 @@ public class AutoBalanceButton extends AbstractAlchemyButton {
 
     @Override
     public Component getMessage() {
-        return ((FusionControllerBlockEntity) blockEntity).isAutoBalanced() ? new TranslatableComponent("alchemistry.container.disable_autobalance") : new TranslatableComponent("alchemistry.container.enable_autobalance");
+        return ((FusionControllerBlockEntity) blockEntity).isAutoBalanced() ? MutableComponent.create(new TranslatableContents("alchemistry.container.disable_autobalance")) : MutableComponent.create(new TranslatableContents("alchemistry.container.enable_autobalance"));
     }
 }

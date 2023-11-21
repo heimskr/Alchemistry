@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static com.smashingmods.alchemistry.datagen.DatagenUtil.getLocation;
-import static com.smashingmods.alchemistry.datagen.DatagenUtil.toIngredientStack;
+import static com.smashingmods.alchemylib.datagen.DatagenHelpers.getLocation;
+import static com.smashingmods.alchemylib.datagen.DatagenHelpers.toIngredientStack;
 
 public class CombinerRecipeProvider {
 
@@ -127,20 +128,20 @@ public class CombinerRecipeProvider {
     }
 
     private void combiner(ItemStack pOutput, List<IngredientStack> pInput, ICondition pCondition) {
-        ResourceLocation recipeId = pOutput.getItem().getRegistryName();
+        ResourceLocation recipeId = ForgeRegistries.ITEMS.getKey(pOutput.getItem());
         ConditionalRecipe.builder()
                 .addCondition(pCondition)
                 .addRecipe(CombinerRecipeBuilder.createRecipe(pOutput, pInput, Objects.requireNonNull(recipeId))
                         .group(String.format("%s:combiner", Alchemistry.MODID))
-                        .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(getLocation(pOutput, "combiner")))
+                        .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(getLocation(pOutput, "combiner", Alchemistry.MODID)))
                         ::save)
                 .build(consumer, new ResourceLocation(Alchemistry.MODID, String.format("combiner/%s", recipeId.getPath())));
     }
 
     private void combiner(ItemStack pOutput, List<IngredientStack> pInput) {
-        CombinerRecipeBuilder.createRecipe(pOutput, pInput, Objects.requireNonNull(pOutput.getItem().getRegistryName()))
+        CombinerRecipeBuilder.createRecipe(pOutput, pInput, Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(pOutput.getItem())))
                 .group(String.format("%s:combiner", Alchemistry.MODID))
-                .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(getLocation(pOutput, "combiner")))
+                .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(getLocation(pOutput, "combiner", Alchemistry.MODID)))
                 .save(consumer);
     }
 }

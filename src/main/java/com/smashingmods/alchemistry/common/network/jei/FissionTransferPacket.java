@@ -1,13 +1,16 @@
 package com.smashingmods.alchemistry.common.network.jei;
 
 import com.smashingmods.alchemistry.Alchemistry;
+import com.smashingmods.alchemistry.client.jei.RecipeTypes;
 import com.smashingmods.alchemistry.common.block.fission.FissionControllerBlockEntity;
 import com.smashingmods.alchemistry.common.block.fission.FissionControllerMenu;
 import com.smashingmods.alchemistry.common.recipe.fission.FissionRecipe;
+import com.smashingmods.alchemistry.registry.MenuRegistry;
 import com.smashingmods.alchemistry.registry.RecipeRegistry;
 import com.smashingmods.alchemylib.api.network.AlchemyPacket;
 import com.smashingmods.alchemylib.api.storage.ProcessingSlotHandler;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import net.minecraft.core.BlockPos;
@@ -15,11 +18,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class FissionTransferPacket implements AlchemyPacket {
 
@@ -59,21 +64,23 @@ public class FissionTransferPacket implements AlchemyPacket {
         RecipeRegistry.getFissionRecipe(recipe -> ItemStack.isSameItemSameTags(recipe.getInput(), input), player.getLevel())
             .ifPresent(recipe -> {
 
+                FissionRecipe recipeCopy = recipe.copy();
+
                 inputHandler.emptyToInventory(inventory);
                 outputHander.emptyToInventory(inventory);
 
                 boolean creative = player.gameMode.isCreative();
-                boolean canTransfer = (inventory.contains(recipe.getInput()) || creative) && inputHandler.isEmpty() && outputHander.isEmpty();
+                boolean canTransfer = (inventory.contains(recipeCopy.getInput()) || creative) && inputHandler.isEmpty() && outputHander.isEmpty();
 
                 if (canTransfer) {
                     if (creative) {
-                        int maxOperations = TransferUtils.getMaxOperations(recipe.getInput(), maxTransfer);
-                        inputHandler.setOrIncrement(0, new ItemStack(recipe.getInput().getItem(), recipe.getInput().getCount() * maxOperations));
+                        int maxOperations = TransferUtils.getMaxOperations(recipeCopy.getInput(), maxTransfer);
+                        inputHandler.setOrIncrement(0, new ItemStack(recipeCopy.getInput().getItem(), recipeCopy.getInput().getCount() * maxOperations));
                     } else {
-                        int slot = inventory.findSlotMatchingItem(recipe.getInput());
-                        int maxOperations = TransferUtils.getMaxOperations(recipe.getInput(), inventory.getItem(slot), maxTransfer, false);
-                        inventory.removeItem(slot, recipe.getInput().getCount() * maxOperations);
-                        inputHandler.setOrIncrement(0, new ItemStack(recipe.getInput().getItem(), recipe.getInput().getCount() * maxOperations));
+                        int slot = inventory.findSlotMatchingItem(recipeCopy.getInput());
+                        int maxOperations = TransferUtils.getMaxOperations(recipeCopy.getInput(), inventory.getItem(slot), maxTransfer, false);
+                        inventory.removeItem(slot, recipeCopy.getInput().getCount() * maxOperations);
+                        inputHandler.setOrIncrement(0, new ItemStack(recipeCopy.getInput().getItem(), recipeCopy.getInput().getCount() * maxOperations));
                     }
                     blockEntity.setProgress(0);
                     blockEntity.setRecipe(recipe);
@@ -91,8 +98,13 @@ public class FissionTransferPacket implements AlchemyPacket {
         }
 
         @Override
-        public Class<FissionRecipe> getRecipeClass() {
-            return FissionRecipe.class;
+        public Optional<MenuType<FissionControllerMenu>> getMenuType() {
+            return Optional.of(MenuRegistry.FISSION_CONTROLLER_MENU.get());
+        }
+
+        @Override
+        public RecipeType<FissionRecipe> getRecipeType() {
+            return RecipeTypes.FISSION;
         }
 
         @Override

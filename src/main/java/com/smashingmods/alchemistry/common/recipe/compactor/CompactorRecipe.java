@@ -30,7 +30,7 @@ public class CompactorRecipe extends AbstractProcessingRecipe {
 
     @Override
     public RecipeType<?> getType() {
-        return RecipeRegistry.COMPACTOR_TYPE;
+        return RecipeRegistry.COMPACTOR_TYPE.get();
     }
 
     @Override

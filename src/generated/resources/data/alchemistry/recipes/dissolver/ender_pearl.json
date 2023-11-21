@@ -2,32 +2,32 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:ender_pearl"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
         "results": [
           {
-            "item": "chemlib:silicon",
-            "count": 16
+            "count": 16,
+            "item": "chemlib:silicon"
           },
           {
-            "item": "chemlib:mercury",
-            "count": 16
+            "count": 16,
+            "item": "chemlib:mercury"
           },
           {
-            "item": "chemlib:neodymium",
-            "count": 16
+            "count": 16,
+            "item": "chemlib:neodymium"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

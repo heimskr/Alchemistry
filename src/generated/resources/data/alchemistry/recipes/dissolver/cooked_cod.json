@@ -2,28 +2,28 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:cooked_cod"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
         "results": [
           {
-            "item": "chemlib:protein",
-            "count": 4
+            "count": 4,
+            "item": "chemlib:protein"
           },
           {
-            "item": "chemlib:selenium",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:selenium"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

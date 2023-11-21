@@ -1,13 +1,16 @@
 package com.smashingmods.alchemistry.common.network.jei;
 
 import com.smashingmods.alchemistry.Alchemistry;
+import com.smashingmods.alchemistry.client.jei.RecipeTypes;
 import com.smashingmods.alchemistry.common.block.fusion.FusionControllerBlockEntity;
 import com.smashingmods.alchemistry.common.block.fusion.FusionControllerMenu;
 import com.smashingmods.alchemistry.common.recipe.fusion.FusionRecipe;
+import com.smashingmods.alchemistry.registry.MenuRegistry;
 import com.smashingmods.alchemistry.registry.RecipeRegistry;
 import com.smashingmods.alchemylib.api.network.AlchemyPacket;
 import com.smashingmods.alchemylib.api.storage.ProcessingSlotHandler;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import net.minecraft.core.BlockPos;
@@ -15,12 +18,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class FusionTransferPacket implements AlchemyPacket {
 
@@ -64,6 +69,8 @@ public class FusionTransferPacket implements AlchemyPacket {
         RecipeRegistry.getFusionRecipe(recipe -> ItemStack.isSameItemSameTags(recipe.getInput1(), input1) && ItemStack.isSameItemSameTags(recipe.getInput2(), input2), player.getLevel())
             .ifPresent(recipe -> {
 
+                FusionRecipe recipeCopy = recipe.copy();
+
                 inputHandler.emptyToInventory(inventory);
                 outputHandler.emptyToInventory(inventory);
 
@@ -72,24 +79,24 @@ public class FusionTransferPacket implements AlchemyPacket {
                 boolean canTransfer = (inventoryContains || creative) && inputHandler.isEmpty() && outputHandler.isEmpty();
 
                 if (canTransfer) {
-                    List<ItemStack> recipeInputs = List.of(recipe.getInput1(), recipe.getInput2());
+                    List<ItemStack> recipeInputs = List.of(recipeCopy.getInput1(), recipeCopy.getInput2());
                     if (creative) {
                         int maxOperations = TransferUtils.getMaxOperations(recipeInputs, maxTransfer);
 
-                        inputHandler.setOrIncrement(0, new ItemStack(recipe.getInput1().getItem(), recipe.getInput1().getCount() * maxOperations));
-                        inputHandler.setOrIncrement(1, new ItemStack(recipe.getInput2().getItem(), recipe.getInput2().getCount() * maxOperations));
+                        inputHandler.setOrIncrement(0, new ItemStack(recipeCopy.getInput1().getItem(), recipeCopy.getInput1().getCount() * maxOperations));
+                        inputHandler.setOrIncrement(1, new ItemStack(recipeCopy.getInput2().getItem(), recipeCopy.getInput2().getCount() * maxOperations));
                     } else {
-                        int slot1 = inventory.findSlotMatchingItem(recipe.getInput1());
-                        int slot2 = inventory.findSlotMatchingItem(recipe.getInput2());
+                        int slot1 = inventory.findSlotMatchingItem(recipeCopy.getInput1());
+                        int slot2 = inventory.findSlotMatchingItem(recipeCopy.getInput2());
                         List<ItemStack> inventoryInputs = List.of(inventory.getItem(slot1), inventory.getItem(slot2));
 
                         int maxOperations = TransferUtils.getMaxOperations(recipeInputs, inventoryInputs, maxTransfer, false);
 
-                        inventory.removeItem(slot1, recipe.getInput1().getCount() * maxOperations);
-                        inventory.removeItem(slot1, recipe.getInput2().getCount() * maxOperations);
+                        inventory.removeItem(slot1, recipeCopy.getInput1().getCount() * maxOperations);
+                        inventory.removeItem(slot1, recipeCopy.getInput2().getCount() * maxOperations);
 
-                        inputHandler.setOrIncrement(0, new ItemStack(recipe.getInput1().getItem(), recipe.getInput1().getCount() * maxOperations));
-                        inputHandler.setOrIncrement(1, new ItemStack(recipe.getInput2().getItem(), recipe.getInput2().getCount() * maxOperations));
+                        inputHandler.setOrIncrement(0, new ItemStack(recipeCopy.getInput1().getItem(), recipeCopy.getInput1().getCount() * maxOperations));
+                        inputHandler.setOrIncrement(1, new ItemStack(recipeCopy.getInput2().getItem(), recipeCopy.getInput2().getCount() * maxOperations));
                     }
                     blockEntity.setProgress(0);
                     blockEntity.setRecipe(recipe);
@@ -107,8 +114,13 @@ public class FusionTransferPacket implements AlchemyPacket {
         }
 
         @Override
-        public Class<FusionRecipe> getRecipeClass() {
-            return FusionRecipe.class;
+        public Optional<MenuType<FusionControllerMenu>> getMenuType() {
+            return Optional.of(MenuRegistry.FUSION_CONTROLLER_MENU.get());
+        }
+
+        @Override
+        public RecipeType<FusionRecipe> getRecipeType() {
+            return RecipeTypes.FUSION;
         }
 
         @Override

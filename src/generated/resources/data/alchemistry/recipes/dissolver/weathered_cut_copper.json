@@ -2,21 +2,19 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:weathered_cut_copper"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 16,
-    "weighted": false,
     "groups": [
       {
         "probability": 85.0,
         "results": [
           {
-            "item": "chemlib:copper",
-            "count": 9
+            "count": 9,
+            "item": "chemlib:copper"
           }
         ]
       },
@@ -24,11 +22,13 @@
         "probability": 15.0,
         "results": [
           {
-            "item": "chemlib:copper_i_oxide",
-            "count": 9
+            "count": 9,
+            "item": "chemlib:copper_i_oxide"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 16,
+    "weighted": false
   }
 }

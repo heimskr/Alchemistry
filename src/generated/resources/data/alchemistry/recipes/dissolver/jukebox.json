@@ -2,32 +2,32 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:jukebox"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
         "results": [
           {
-            "item": "chemlib:graphite",
-            "count": 64
+            "count": 64,
+            "item": "chemlib:graphite"
           },
           {
-            "item": "chemlib:graphite",
-            "count": 64
+            "count": 64,
+            "item": "chemlib:graphite"
           },
           {
-            "item": "chemlib:cellulose",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:cellulose"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

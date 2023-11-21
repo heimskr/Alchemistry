@@ -2,14 +2,12 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:gilded_blackstone"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 29.0,
@@ -23,8 +21,8 @@
         "probability": 20.0,
         "results": [
           {
-            "item": "chemlib:gold",
-            "count": 8
+            "count": 8,
+            "item": "chemlib:gold"
           }
         ]
       },
@@ -84,6 +82,8 @@
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

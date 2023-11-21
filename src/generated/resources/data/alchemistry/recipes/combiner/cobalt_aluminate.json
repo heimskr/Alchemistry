@@ -3,22 +3,22 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:oxygen"
-      },
-      "count": 4
-    },
-    {
-      "ingredient": {
-        "item": "chemlib:aluminum"
-      },
-      "count": 2
-    },
-    {
+      "count": 1,
       "ingredient": {
         "item": "chemlib:cobalt"
-      },
-      "count": 1
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "chemlib:aluminum"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "chemlib:oxygen"
+      }
     }
   ],
   "result": {

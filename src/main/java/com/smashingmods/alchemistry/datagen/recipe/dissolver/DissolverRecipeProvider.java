@@ -3,9 +3,9 @@ package com.smashingmods.alchemistry.datagen.recipe.dissolver;
 import com.smashingmods.alchemistry.Alchemistry;
 import com.smashingmods.alchemistry.common.recipe.dissolver.ProbabilityGroup;
 import com.smashingmods.alchemistry.common.recipe.dissolver.ProbabilitySet;
-import com.smashingmods.alchemistry.datagen.DatagenUtil;
 import com.smashingmods.alchemistry.datagen.recipe.combiner.CombinerRecipeBuilder;
 import com.smashingmods.alchemylib.api.item.IngredientStack;
+import com.smashingmods.alchemylib.datagen.DatagenHelpers;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class DissolverRecipeProvider {
     }
 
     public void dissolver(ItemLike pItemLike, ProbabilitySet pSet, boolean pReversible) {
-        dissolver(new IngredientStack(pItemLike), pSet, Objects.requireNonNull(pItemLike.asItem().getRegistryName()));
+        dissolver(new IngredientStack(pItemLike), pSet, Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(pItemLike.asItem())));
 
         if (pReversible) {
             ItemStack output = new ItemStack(pItemLike);
@@ -62,8 +63,8 @@ public class DissolverRecipeProvider {
                     ingredientStackList.add(new IngredientStack(itemStack));
                 }
 
-                ResourceLocation recipeId = DatagenUtil.getLocation(output, "combiner");
-                CombinerRecipeBuilder.createRecipe(output, ingredientStackList, Objects.requireNonNull(output.getItem().getRegistryName()))
+                ResourceLocation recipeId = DatagenHelpers.getLocation(output, "combiner", Alchemistry.MODID);
+                CombinerRecipeBuilder.createRecipe(output, ingredientStackList, Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(output.getItem())))
                         .group(String.format("%s:combiner", Alchemistry.MODID))
                         .unlockedBy("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
                         .save(consumer);

@@ -2,21 +2,19 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:magma_block"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 2,
-    "weighted": true,
     "groups": [
       {
         "probability": 10.0,
         "results": [
           {
-            "item": "chemlib:manganese",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:manganese"
           }
         ]
       },
@@ -48,8 +46,8 @@
         "probability": 10.0,
         "results": [
           {
-            "item": "chemlib:silicon_dioxide",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:silicon_dioxide"
           }
         ]
       },
@@ -57,8 +55,8 @@
         "probability": 20.0,
         "results": [
           {
-            "item": "chemlib:sulfur",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:sulfur"
           }
         ]
       },
@@ -74,8 +72,8 @@
         "probability": 8.0,
         "results": [
           {
-            "item": "chemlib:lead",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:lead"
           }
         ]
       },
@@ -95,6 +93,8 @@
           }
         ]
       }
-    ]
+    ],
+    "rolls": 2,
+    "weighted": true
   }
 }

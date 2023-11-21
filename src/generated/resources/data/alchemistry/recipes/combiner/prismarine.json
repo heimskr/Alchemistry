@@ -3,22 +3,22 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:selenium"
-      },
-      "count": 4
-    },
-    {
-      "ingredient": {
-        "item": "chemlib:niobium"
-      },
-      "count": 12
-    },
-    {
+      "count": 16,
       "ingredient": {
         "item": "chemlib:beryl"
-      },
-      "count": 16
+      }
+    },
+    {
+      "count": 12,
+      "ingredient": {
+        "item": "chemlib:niobium"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "chemlib:selenium"
+      }
     }
   ],
   "result": {

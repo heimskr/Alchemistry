@@ -2,10 +2,10 @@
   "type": "alchemistry:compactor",
   "group": "alchemistry:compactor",
   "input": {
+    "count": 3,
     "ingredient": {
       "item": "chemlib:silicon_dioxide"
-    },
-    "count": 3
+    }
   },
   "result": {
     "item": "minecraft:flint"

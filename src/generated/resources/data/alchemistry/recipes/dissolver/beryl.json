@@ -2,36 +2,36 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "chemlib:beryl"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
         "results": [
           {
-            "item": "chemlib:beryllium",
-            "count": 3
+            "count": 3,
+            "item": "chemlib:beryllium"
           },
           {
-            "item": "chemlib:aluminum",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:aluminum"
           },
           {
-            "item": "chemlib:silicon",
-            "count": 6
+            "count": 6,
+            "item": "chemlib:silicon"
           },
           {
-            "item": "chemlib:oxygen",
-            "count": 18
+            "count": 18,
+            "item": "chemlib:oxygen"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

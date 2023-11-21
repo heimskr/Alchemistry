@@ -2,32 +2,32 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "chemlib:potassium_dichromate"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
         "results": [
           {
-            "item": "chemlib:potassium",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:potassium"
           },
           {
-            "item": "chemlib:chromium",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:chromium"
           },
           {
-            "item": "chemlib:oxygen",
-            "count": 7
+            "count": 7,
+            "item": "chemlib:oxygen"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

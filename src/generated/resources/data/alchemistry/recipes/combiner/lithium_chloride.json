@@ -3,16 +3,16 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:chlorine"
-      },
-      "count": 1
-    },
-    {
+      "count": 1,
       "ingredient": {
         "item": "chemlib:lithium"
-      },
-      "count": 1
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "chemlib:chlorine"
+      }
     }
   ],
   "result": {

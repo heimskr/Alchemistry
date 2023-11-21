@@ -4,7 +4,8 @@ import com.smashingmods.alchemistry.Config;
 import com.smashingmods.alchemylib.api.block.AbstractProcessingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -52,7 +53,7 @@ public class AtomizerBlock extends AbstractProcessingBlock {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable BlockGetter pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
         super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
-        pTooltip.add(new TranslatableComponent("tooltip.alchemistry.energy_requirement", Config.Common.atomizerEnergyPerTick.get()));
+        pTooltip.add(MutableComponent.create(new TranslatableContents("tooltip.alchemistry.energy_requirement", Config.Common.atomizerEnergyPerTick.get())));
     }
 
     @Override
@@ -67,7 +68,7 @@ public class AtomizerBlock extends AbstractProcessingBlock {
             }
 
             if (!interactionSuccessful) {
-                NetworkHooks.openGui(((ServerPlayer) pPlayer), (AtomizerBlockEntity) blockEntity, pPos);
+                NetworkHooks.openScreen(((ServerPlayer) pPlayer), (AtomizerBlockEntity) blockEntity, pPos);
             }
             return InteractionResult.CONSUME;
         }

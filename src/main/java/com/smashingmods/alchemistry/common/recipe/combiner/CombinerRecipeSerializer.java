@@ -10,12 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
+public class CombinerRecipeSerializer<T extends CombinerRecipe> implements RecipeSerializer<T> {
 
     private final IFactory<T> factory;
 
@@ -34,9 +33,9 @@ public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeReg
         inputJson.forEach(element -> input.add(IngredientStack.fromJson(element.getAsJsonObject())));
 
         if (pSerializedRecipe.get("result").isJsonObject()) {
-            output = CraftingHelper.getItemStack(pSerializedRecipe.getAsJsonObject("result"), false, true);
+            output = CraftingHelper.getItemStack(pSerializedRecipe.getAsJsonObject("result"), true, true);
         } else {
-            output = CraftingHelper.getItemStack(pSerializedRecipe.getAsJsonObject("item"), false, true);
+            output = CraftingHelper.getItemStack(pSerializedRecipe.getAsJsonObject("item"), true, true);
         }
         return this.factory.create(pRecipeId, group, input, output);
     }

@@ -16,9 +16,13 @@ import com.smashingmods.alchemistry.common.recipe.liquifier.LiquifierRecipe;
 import com.smashingmods.alchemistry.common.recipe.liquifier.LiquifierRecipeSerializer;
 import com.smashingmods.alchemylib.api.recipe.AbstractProcessingRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -35,14 +39,16 @@ import static com.smashingmods.alchemistry.Alchemistry.MODID;
 
 public class RecipeRegistry {
 
+    private static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, MODID);
     private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
-    public static RecipeType<AtomizerRecipe> ATOMIZER_TYPE;
-    public static RecipeType<CompactorRecipe> COMPACTOR_TYPE;
-    public static RecipeType<CombinerRecipe> COMBINER_TYPE;
-    public static RecipeType<DissolverRecipe> DISSOLVER_TYPE;
-    public static RecipeType<FissionRecipe> FISSION_TYPE;
-    public static RecipeType<FusionRecipe> FUSION_TYPE;
-    public static RecipeType<LiquifierRecipe> LIQUIFIER_TYPE;
+
+    public static RegistryObject<RecipeType<AtomizerRecipe>> ATOMIZER_TYPE = registerRecipeType("atomizer");
+    public static RegistryObject<RecipeType<CompactorRecipe>> COMPACTOR_TYPE = registerRecipeType("compactor");
+    public static RegistryObject<RecipeType<CombinerRecipe>> COMBINER_TYPE = registerRecipeType("combiner");
+    public static RegistryObject<RecipeType<DissolverRecipe>> DISSOLVER_TYPE = registerRecipeType("dissolver");
+    public static RegistryObject<RecipeType<FissionRecipe>> FISSION_TYPE = registerRecipeType("fission");
+    public static RegistryObject<RecipeType<FusionRecipe>> FUSION_TYPE = registerRecipeType("fusion");
+    public static RegistryObject<RecipeType<LiquifierRecipe>> LIQUIFIER_TYPE = registerRecipeType("liquifier");
 
     public static final RegistryObject<AtomizerRecipeSerializer<AtomizerRecipe>> ATOMIZER_SERIALIZER
             = SERIALIZERS.register("atomizer", () -> new AtomizerRecipeSerializer<>(AtomizerRecipe::new));
@@ -67,6 +73,49 @@ public class RecipeRegistry {
 
     private static final Map<RecipeType<? extends AbstractProcessingRecipe>, LinkedList<? extends AbstractProcessingRecipe>> recipeTypeMap = new LinkedHashMap<>();
     private static final Map<String, LinkedList<? extends AbstractProcessingRecipe>> recipeGroupMap = new LinkedHashMap<>();
+
+    private static <T extends AbstractProcessingRecipe> RegistryObject<RecipeType<T>> registerRecipeType(String pType) {
+        RecipeType<T> type = new RecipeType<>() {
+            @Override
+            public String toString() {
+                return pType;
+            }
+        };
+        return RECIPE_TYPES.register(pType, () -> type);
+    }
+
+    /**
+     * Attach a ReloadListener that clears the internal {@link RecipeRegistry#recipeTypeMap recipeTypeMap} and
+     * {@link RecipeRegistry#recipeGroupMap recipeGroupMap} so that data pack reloading takes effect immediately.
+     * @implNote This event handler just clears the internal maps, but a better version might update them in-place.
+     *           That said, datapack reloads don't actually occur that often in regular play, so there is little point
+     *           over-engineering this.
+     * @param event the AddReloadListener event.
+     */
+    public static void postReload(final AddReloadListenerEvent event) {
+        event.addListener(new SimplePreparableReloadListener<Boolean>() {
+            @Override
+            public String getName() {
+                return "Alchemistry Cache Invalidator";
+            }
+
+            // Runs in the thread pool, figures out whether anything in non-standard Packs changed.
+            @Override
+            protected Boolean prepare(ResourceManager pResourceManager, ProfilerFiller pProfiler) {
+                // Always clear the maps on reload.
+                return true;
+            }
+
+            // Runs on main thread; does the actual cache invalidation.
+            @Override
+            protected void apply(Boolean pShouldClear, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
+                if (pShouldClear) {
+                    recipeTypeMap.clear();
+                    recipeGroupMap.clear();
+                }
+            }
+        });
+    }
 
     @SuppressWarnings("unchecked")
     public static <R extends AbstractProcessingRecipe> LinkedList<R> getRecipesByType(RecipeType<R> pRecipeType, Level pLevel) {
@@ -100,31 +149,31 @@ public class RecipeRegistry {
     }
 
     public static LinkedList<AtomizerRecipe> getAtomizerRecipes(Level pLevel) {
-        return getRecipesByType(ATOMIZER_TYPE, pLevel);
+        return getRecipesByType(ATOMIZER_TYPE.get(), pLevel);
     }
 
     public static LinkedList<CombinerRecipe> getCombinerRecipes(Level pLevel) {
-        return getRecipesByType(COMBINER_TYPE, pLevel);
+        return getRecipesByType(COMBINER_TYPE.get(), pLevel);
     }
 
     public static LinkedList<CompactorRecipe> getCompactorRecipes(Level pLevel) {
-        return getRecipesByType(COMPACTOR_TYPE, pLevel);
+        return getRecipesByType(COMPACTOR_TYPE.get(), pLevel);
     }
 
     public static LinkedList<DissolverRecipe> getDissolverRecipes(Level pLevel) {
-        return getRecipesByType(DISSOLVER_TYPE, pLevel);
+        return getRecipesByType(DISSOLVER_TYPE.get(), pLevel);
     }
 
     public static LinkedList<FissionRecipe> getFissionRecipes(Level pLevel) {
-        return getRecipesByType(FISSION_TYPE, pLevel);
+        return getRecipesByType(FISSION_TYPE.get(), pLevel);
     }
 
     public static LinkedList<FusionRecipe> getFusionRecipes(Level pLevel) {
-        return getRecipesByType(FUSION_TYPE, pLevel);
+        return getRecipesByType(FUSION_TYPE.get(), pLevel);
     }
 
     public static LinkedList<LiquifierRecipe> getLiquifierRecipes(Level pLevel) {
-        return getRecipesByType(LIQUIFIER_TYPE, pLevel);
+        return getRecipesByType(LIQUIFIER_TYPE.get(), pLevel);
     }
 
     public static Optional<AtomizerRecipe> getAtomizerRecipe(Predicate<AtomizerRecipe> pPredicate, Level pLevel) {
@@ -156,6 +205,7 @@ public class RecipeRegistry {
     }
 
     public static void register(IEventBus eventBus) {
+        RECIPE_TYPES.register(eventBus);
         SERIALIZERS.register(eventBus);
     }
 }

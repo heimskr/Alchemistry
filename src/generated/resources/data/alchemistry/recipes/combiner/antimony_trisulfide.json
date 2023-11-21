@@ -3,16 +3,16 @@
   "group": "alchemistry:combiner",
   "input": [
     {
+      "count": 2,
       "ingredient": {
         "item": "chemlib:antimony"
-      },
-      "count": 2
+      }
     },
     {
+      "count": 3,
       "ingredient": {
         "item": "chemlib:sulfur"
-      },
-      "count": 3
+      }
     }
   ],
   "result": {

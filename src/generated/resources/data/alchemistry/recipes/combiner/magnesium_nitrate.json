@@ -3,16 +3,16 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:nitrate"
-      },
-      "count": 2
-    },
-    {
+      "count": 1,
       "ingredient": {
         "item": "chemlib:magnesium"
-      },
-      "count": 1
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "chemlib:nitrate"
+      }
     }
   ],
   "result": {

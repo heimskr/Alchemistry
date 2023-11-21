@@ -3,16 +3,16 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:mendelevium"
-      },
-      "count": 32
-    },
-    {
+      "count": 8,
       "ingredient": {
         "item": "chemlib:hydroxylapatite"
-      },
-      "count": 8
+      }
+    },
+    {
+      "count": 32,
+      "ingredient": {
+        "item": "chemlib:mendelevium"
+      }
     }
   ],
   "result": {

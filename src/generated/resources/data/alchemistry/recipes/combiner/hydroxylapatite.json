@@ -3,22 +3,22 @@
   "group": "alchemistry:combiner",
   "input": [
     {
+      "count": 5,
       "ingredient": {
         "item": "chemlib:calcium"
-      },
-      "count": 5
+      }
     },
     {
-      "ingredient": {
-        "item": "chemlib:hydroxide"
-      },
-      "count": 2
-    },
-    {
+      "count": 6,
       "ingredient": {
         "item": "chemlib:phosphate"
-      },
-      "count": 6
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "item": "chemlib:hydroxide"
+      }
     }
   ],
   "result": {

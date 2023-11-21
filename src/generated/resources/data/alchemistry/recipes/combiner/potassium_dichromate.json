@@ -3,22 +3,22 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:chromium"
-      },
-      "count": 2
-    },
-    {
+      "count": 2,
       "ingredient": {
         "item": "chemlib:potassium"
-      },
-      "count": 2
+      }
     },
     {
+      "count": 2,
+      "ingredient": {
+        "item": "chemlib:chromium"
+      }
+    },
+    {
+      "count": 7,
       "ingredient": {
         "item": "chemlib:oxygen"
-      },
-      "count": 7
+      }
     }
   ],
   "result": {

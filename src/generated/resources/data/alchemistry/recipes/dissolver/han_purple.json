@@ -2,14 +2,12 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "chemlib:han_purple"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 100.0,
@@ -21,15 +19,17 @@
             "item": "chemlib:copper"
           },
           {
-            "item": "chemlib:silicon",
-            "count": 2
+            "count": 2,
+            "item": "chemlib:silicon"
           },
           {
-            "item": "chemlib:oxygen",
-            "count": 6
+            "count": 6,
+            "item": "chemlib:oxygen"
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

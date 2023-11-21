@@ -2,10 +2,10 @@
   "type": "alchemistry:compactor",
   "group": "alchemistry:compactor",
   "input": {
+    "count": 4,
     "ingredient": {
       "item": "chemlib:lead_iodide"
-    },
-    "count": 4
+    }
   },
   "result": {
     "item": "minecraft:yellow_dye"

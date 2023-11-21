@@ -2,21 +2,19 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:red_sandstone"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 4,
-    "weighted": true,
     "groups": [
       {
         "probability": 100.0,
         "results": [
           {
-            "item": "chemlib:silicon_dioxide",
-            "count": 4
+            "count": 4,
+            "item": "chemlib:silicon_dioxide"
           }
         ]
       },
@@ -28,6 +26,8 @@
           }
         ]
       }
-    ]
+    ],
+    "rolls": 4,
+    "weighted": true
   }
 }

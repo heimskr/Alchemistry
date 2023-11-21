@@ -2,21 +2,19 @@
   "type": "alchemistry:dissolver",
   "group": "alchemistry:dissolver",
   "input": {
+    "count": 1,
     "ingredient": {
       "item": "minecraft:bone"
-    },
-    "count": 1
+    }
   },
   "output": {
-    "rolls": 1,
-    "weighted": false,
     "groups": [
       {
         "probability": 50.0,
         "results": [
           {
-            "item": "chemlib:hydroxylapatite",
-            "count": 3
+            "count": 3,
+            "item": "chemlib:hydroxylapatite"
           }
         ]
       },
@@ -28,6 +26,8 @@
           }
         ]
       }
-    ]
+    ],
+    "rolls": 1,
+    "weighted": false
   }
 }

@@ -3,6 +3,7 @@ package com.smashingmods.alchemistry.common.block.fission;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.smashingmods.alchemistry.Alchemistry;
+import com.smashingmods.alchemistry.client.container.button.ReactorAutoejectButton;
 import com.smashingmods.alchemistry.common.recipe.fission.FissionRecipe;
 import com.smashingmods.alchemylib.api.blockentity.container.AbstractProcessingScreen;
 import com.smashingmods.alchemylib.api.blockentity.container.Direction2D;
@@ -11,9 +12,11 @@ import com.smashingmods.alchemylib.api.blockentity.container.data.AbstractDispla
 import com.smashingmods.alchemylib.api.blockentity.container.data.EnergyDisplayData;
 import com.smashingmods.alchemylib.api.blockentity.container.data.ProgressDisplayData;
 import com.smashingmods.alchemylib.api.storage.ProcessingSlotHandler;
+import com.smashingmods.alchemylib.client.button.PauseButton;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +28,8 @@ public class FissionControllerScreen extends AbstractProcessingScreen<FissionCon
 
     protected final List<AbstractDisplayData> displayData = new ArrayList<>();
     private final FissionControllerBlockEntity blockEntity;
+    private final PauseButton pauseButton = new PauseButton(this);
+    private final ReactorAutoejectButton outputBehaviourButton = new ReactorAutoejectButton(this);
 
     public FissionControllerScreen(FissionControllerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -38,6 +43,7 @@ public class FissionControllerScreen extends AbstractProcessingScreen<FissionCon
     @Override
     protected void init() {
         widgets.add(pauseButton);
+        widgets.add(outputBehaviourButton);
         super.init();
     }
 
@@ -61,7 +67,7 @@ public class FissionControllerScreen extends AbstractProcessingScreen<FissionCon
 
     @Override
     protected void renderLabels(PoseStack pPoseStack, int pMouseX, int pMouseY) {
-        Component title = new TranslatableComponent("alchemistry.container.fission_controller");
+        MutableComponent title = MutableComponent.create(new TranslatableContents("alchemistry.container.fission_controller"));
         drawString(pPoseStack, font, title, imageWidth / 2 - font.width(title) / 2, -10, 0xFFFFFFFF);
     }
 
@@ -78,7 +84,7 @@ public class FissionControllerScreen extends AbstractProcessingScreen<FissionCon
 
             FakeItemRenderer.renderFakeItem(currentInput, x, y, 0.35f);
             if (pMouseX >= x - 1 && pMouseX <= x + 18 && pMouseY > y - 2 && pMouseY <= y + 18) {
-                renderItemTooltip(pPoseStack, currentInput, new TranslatableComponent("alchemistry.container.current_recipe"), pMouseX, pMouseY);
+                renderItemTooltip(pPoseStack, currentInput, MutableComponent.create(new TranslatableContents("alchemistry.container.current_recipe")), pMouseX, pMouseY);
             }
         }
     }

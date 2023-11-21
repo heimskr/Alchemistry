@@ -3,28 +3,28 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:mendelevium"
-      },
-      "count": 64
-    },
-    {
-      "ingredient": {
-        "item": "chemlib:titanium"
-      },
-      "count": 64
-    },
-    {
+      "count": 64,
       "ingredient": {
         "item": "chemlib:lutetium"
-      },
-      "count": 64
+      }
     },
     {
+      "count": 64,
+      "ingredient": {
+        "item": "chemlib:titanium"
+      }
+    },
+    {
+      "count": 64,
       "ingredient": {
         "item": "chemlib:dysprosium"
-      },
-      "count": 64
+      }
+    },
+    {
+      "count": 64,
+      "ingredient": {
+        "item": "chemlib:mendelevium"
+      }
     }
   ],
   "result": {

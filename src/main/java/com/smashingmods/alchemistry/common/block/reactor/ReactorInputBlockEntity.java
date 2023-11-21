@@ -6,8 +6,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -29,20 +29,19 @@ public class ReactorInputBlockEntity extends BlockEntity {
     }
 
     public void setController(@Nullable AbstractReactorBlockEntity pController) {
+        if (this.controller == pController) {
+            // No need to create superfluous LazyOptional instances
+            return;
+        }
         this.controller = pController;
         //noinspection ConstantConditions
         this.lazyInputHandler = LazyOptional.of(() -> controller.getInputHandler());
     }
 
-    public void onControllerRemoved() {
-        controller = null;
-        lazyInputHandler = LazyOptional.empty();
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> pCapability, @Nullable Direction pDirection) {
-        if (pCapability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (pCapability == ForgeCapabilities.ITEM_HANDLER) {
             if (controller != null) {
                 return lazyInputHandler.cast();
             }

@@ -3,22 +3,22 @@
   "group": "alchemistry:combiner",
   "input": [
     {
-      "ingredient": {
-        "item": "chemlib:silicon_dioxide"
-      },
-      "count": 2
-    },
-    {
+      "count": 1,
       "ingredient": {
         "item": "chemlib:aluminum_oxide"
-      },
-      "count": 1
+      }
     },
     {
+      "count": 2,
+      "ingredient": {
+        "item": "chemlib:silicon_dioxide"
+      }
+    },
+    {
+      "count": 2,
       "ingredient": {
         "item": "chemlib:water"
-      },
-      "count": 2
+      }
     }
   ],
   "result": {
